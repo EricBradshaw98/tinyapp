@@ -78,22 +78,40 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect(`/urls`);
  });
 
- app.use(cookieParser()); // Use cookie-parser middleware
+ app.use(cookieParser()); 
 
 app.post("/login", (req, res) => {
   const { username } = req.body;
 
-  // Check if a username is provided in the request body
-  if (username) {
-    // Set a cookie named 'username' with the provided value
-    res.cookie("username", username);
+  res.cookie("username", username);
 
-    // Redirect the browser back to the /urls page
+    
     res.redirect(`/urls`);
-  } else {
-    // Handle the case where the username is not provided
-    res.status(400).send("Bad Request: Please provide a username");
-  }
+  
+});
+
+app.get("/urls", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"],
+    // ... any other vars
+  };
+  res.render("urls_index", templateVars);
+});
+
+app.get("/urls/:id", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"],
+    // ... any other vars
+  };
+  res.render("urls_show", templateVars);
+});
+
+app.get("/urls/new", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"],
+    // ... any other vars
+  };
+  res.render("urls_new", templateVars);
 });
 
 
