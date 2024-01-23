@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 
 function generateRandomString (length) {
  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -76,6 +77,25 @@ app.post("/urls/:id/delete", (req, res) => {
   urlDatabase[shortURL] = newURL;
   res.redirect(`/urls`);
  });
+
+ app.use(cookieParser()); // Use cookie-parser middleware
+
+app.post("/login", (req, res) => {
+  const { username } = req.body;
+
+  // Check if a username is provided in the request body
+  if (username) {
+    // Set a cookie named 'username' with the provided value
+    res.cookie("username", username);
+
+    // Redirect the browser back to the /urls page
+    res.redirect(`/urls`);
+  } else {
+    // Handle the case where the username is not provided
+    res.status(400).send("Bad Request: Please provide a username");
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
