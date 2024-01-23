@@ -44,15 +44,23 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  const id = req.params.id; // Extract the id from the URL parameter
-  const longURL = urlDatabase[id]; // Access the longURL using the id
-  const templateVars = { id, longURL };
+  const shortURL = req.params.id; // Extract the id from the URL parameter
+  const longURL = urlDatabase[shortURL]; // Access the longURL using the id
+  const templateVars = { shortURL, longURL };
   res.render("urls_show", templateVars);
 });
 
+app.get("/u/:id", (req, res) => {
+  const shortURL = req.params.id;
+  const longURL = urlDatabase[shortURL]
+  res.redirect(longURL);
+});
+
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+ const longURL = req.body.longURL
+ const shortURL = generateRandomString(6);
+ urlDatabase[shortURL] = longURL;
+ res.redirect(`/urls/${shortURL}`);
 });
 
 app.listen(PORT, () => {
