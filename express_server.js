@@ -13,6 +13,14 @@ function generateRandomString (length) {
   return randomString;
 
 };
+function getUserByEmail(email) {
+  for (const userId in users) {
+    if (users[userId].email === email) {
+      return users[userId];
+    }
+  }
+  return null;
+}
 
 const app = express();
 
@@ -134,6 +142,17 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   const { email, password } = req.body
   const userId = generateRandomString(6);
+  const existingUser = getUserByEmail(email);
+  if (existingUser) {
+    res.status(400).send("Email in use");
+    return;
+  }
+  
+  if (!email) {
+    res.status(400).send("Input an email");
+    return;
+
+  }
  // Create a new user object
  const newUser = {
   id: userId,
