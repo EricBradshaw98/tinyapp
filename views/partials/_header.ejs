@@ -28,16 +28,13 @@
             </form>
           </div>
         <% } else {%>
-          
-          <form class="form-inline" action="/login" method="POST">
-            <label for="username"></label>
-            <input
-              class="form-control"
-              type="text"
-              name="username"
-              placeholder="Username"
-              style="width: 300px; margin-right: 0.5em;"
-            />
+        </div>
+        
+          <form class="form-inline" action="/redirectregister" method="POST">
+            <button type="submit" class="btn btn-primary">Register</button>
+          </form>
+          &nbsp;
+          <form class="form-inline" action="/redirectlogin" method="POST">
             <button type="submit" class="btn btn-primary">Login</button>
           </form>
         <% } %>

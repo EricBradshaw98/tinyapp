@@ -96,6 +96,17 @@ const templateVars = {
 res.render("register", templateVars);
 });
 
+app.get("/login", (req, res) => {
+  const userId = req.cookies.user_id;
+
+  const user = users[userId];
+
+const templateVars = {
+    user,
+  };
+res.render("login", templateVars);
+});
+
 
 app.post("/urls", (req, res) => {
  const longURL = req.body.longURL
@@ -103,6 +114,7 @@ app.post("/urls", (req, res) => {
  urlDatabase[shortURL] = longURL;
  res.redirect(`/urls/${shortURL}`);
 });
+
 
 app.post("/urls/:id/delete", (req, res) => {
   const deleteURL = req.params.id; 
@@ -139,6 +151,22 @@ app.post("/logout", (req, res) => {
   
 });
 
+app.post("/redirectregister", (req, res) => {
+
+  
+ 
+  res.redirect(`/register`);
+   
+ });
+
+ app.post("/redirectlogin", (req, res) => {
+
+  
+ 
+  res.redirect(`/login`);
+   
+ });
+
 app.post("/register", (req, res) => {
   const { email, password } = req.body
   const userId = generateRandomString(6);
@@ -152,6 +180,10 @@ app.post("/register", (req, res) => {
     res.status(400).send("Input an email");
     return;
 
+  }
+  if (!password) {
+    res.status(400).send("Input apassword");
+    return;
   }
  // Create a new user object
  const newUser = {
