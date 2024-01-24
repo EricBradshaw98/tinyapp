@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 
 function generateRandomString (length) {
  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -23,30 +24,28 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 app.use(express.urlencoded({ extended: true }));
-
-// app.get("/", (req, res) => {
-//   res.send("Hello!");
-// });
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-// app.get("/hello", (req, res) => {
-//   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
+app.use(cookieParser()); 
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
-  res.render("urls_index", templateVars);
+  const templateVars = {
+    username: req.cookies["username"],
+    urls: urlDatabase
+    // ... any other vars
+  };
+res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = {
+    username: req.cookies["username"],
+  };
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
   const shortURL = req.params.id; // Extract the id from the URL parameter
   const longURL = urlDatabase[shortURL]; // Access the longURL using the id
-  const templateVars = { shortURL, longURL };
+  const templateVars = { shortURL, longURL, username:req.cookies["username"] };
   res.render("urls_show", templateVars);
 });
 
@@ -55,6 +54,8 @@ app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[shortURL]
   res.redirect(longURL);
 });
+
+
 
 app.post("/urls", (req, res) => {
  const longURL = req.body.longURL
@@ -76,6 +77,28 @@ app.post("/urls/:id/delete", (req, res) => {
   urlDatabase[shortURL] = newURL;
   res.redirect(`/urls`);
  });
+
+ 
+
+app.post("/login", (req, res) => {
+  const { username } = req.body;
+
+  res.cookie("username", username);
+
+    
+    res.redirect(`/urls`);
+  
+});
+
+app.post("/logout", (req, res) => {
+
+  
+ res.clearCookie("username");
+ res.redirect(`/urls`);
+  
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
