@@ -17,9 +17,10 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
-      <div class="ml-auto"> <!-- Move the "Logged in as" and logout button to the right -->
+      <div class="ml-auto"> 
+        
         <% if (username) { %>
-          <!-- Displayed when user is logged in -->
+          
           <div class="form-inline" style="color: white; margin-right: 1em;">
             Logged in as: <%= username %>!
             <form class="ml-2" action="/logout" method="POST">
@@ -27,7 +28,7 @@
             </form>
           </div>
         <% } else {%>
-          <!-- Displayed when no user is logged in -->
+          
           <form class="form-inline" action="/login" method="POST">
             <label for="username"></label>
             <input
