@@ -133,13 +133,23 @@ app.post("/urls/:id/delete", (req, res) => {
  
 
 app.post("/login", (req, res) => {
-  const { username } = req.body;
+  const { email, password } = req.body;
+  const user = getUserByEmail(email);
 
-  res.cookie("username", username);
-
+  if (user) {
     
-    res.redirect(`/urls`);
-  
+    if (user.password === password) {
+      
+      res.cookie("user_id", user.id);
+      res.redirect("/urls");
+    } else {
+      
+      res.status(403).send("Email and password don't match.");
+    }
+  } else {
+    
+    res.status(403).send("Email not found.");
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -147,7 +157,7 @@ app.post("/logout", (req, res) => {
   
  res.clearCookie("user_id");
  console.log(users)
- res.redirect(`/urls`);
+ res.redirect(`/login`);
   
 });
 
