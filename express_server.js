@@ -13,11 +13,24 @@ function generateRandomString (length) {
   return randomString;
 
 };
+
 const app = express();
 
 const PORT = 8080;
 
 app.set("view engine", "ejs");
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -27,17 +40,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); 
 
 app.get("/urls", (req, res) => {
-  const templateVars = {
-    username: req.cookies["username"],
-    urls: urlDatabase
-    // ... any other vars
+ 
+  const userId = req.cookies.user_id;
+
+  const user = users[userId];
+
+const templateVars = {
+    user, urls: urlDatabase
   };
 res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = {
-    username: req.cookies["username"],
+  const userId = req.cookies.user_id;
+
+  const user = users[userId];
+
+const templateVars = {
+    user,
   };
   res.render("urls_new", templateVars);
 });
@@ -45,7 +65,9 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const shortURL = req.params.id; // Extract the id from the URL parameter
   const longURL = urlDatabase[shortURL]; // Access the longURL using the id
-  const templateVars = { shortURL, longURL, username:req.cookies["username"] };
+  const userId = req.cookies.user_id;
+  const user = users[userId];
+  const templateVars = { shortURL, longURL, user };
   res.render("urls_show", templateVars);
 });
 
@@ -56,10 +78,12 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  const templateVars = {
-    username: req.cookies["username"],
-    urls: urlDatabase
-    // ... any other vars
+  const userId = req.cookies.user_id;
+
+  const user = users[userId];
+
+const templateVars = {
+    user,
   };
 res.render("register", templateVars);
 });
@@ -101,10 +125,29 @@ app.post("/login", (req, res) => {
 app.post("/logout", (req, res) => {
 
   
- res.clearCookie("username");
+ res.clearCookie("user_id");
+ console.log(users)
  res.redirect(`/urls`);
   
 });
+
+app.post("/register", (req, res) => {
+  const { email, password } = req.body
+  const userId = generateRandomString(6);
+ // Create a new user object
+ const newUser = {
+  id: userId,
+  email,
+  password, 
+};
+// add to object
+users[userId] = newUser;
+
+res.cookie("user_id", userId);
+  console.log(users)
+  res.redirect(`/urls`);
+   
+ });
 
 
 
