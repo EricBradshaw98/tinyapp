@@ -18,26 +18,23 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
       <div class="ml-auto"> 
-        
-        <% if (username) { %>
+
+        <% if (user) { %>
           
           <div class="form-inline" style="color: white; margin-right: 1em;">
-            Logged in as: <%= username %>!
+            Logged in as: <%= user.email %>!
             <form class="ml-2" action="/logout" method="POST">
               <button type="submit" class="btn btn-danger">Logout</button>
             </form>
           </div>
         <% } else {%>
-          
-          <form class="form-inline" action="/login" method="POST">
-            <label for="username"></label>
-            <input
-              class="form-control"
-              type="text"
-              name="username"
-              placeholder="Username"
-              style="width: 300px; margin-right: 0.5em;"
-            />
+        </div>
+        
+          <form class="form-inline" action="/redirectregister" method="POST">
+            <button type="submit" class="btn btn-primary">Register</button>
+          </form>
+          &nbsp;
+          <form class="form-inline" action="/redirectlogin" method="POST">
             <button type="submit" class="btn btn-primary">Login</button>
           </form>
         <% } %>
