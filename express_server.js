@@ -235,9 +235,9 @@ const url = { longURL, userID,}
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const user = getUserByEmail(email);
-const hashedPassword = password
+const textPassword = password
   if (user) {
-    if (bcrypt.compareSync(hashedPassword, user.password)) {
+    if (bcrypt.compareSync(textPassword, user.password)) {
        res.cookie("user_id", user.id);
       res.redirect("/urls");
     } else {
@@ -247,6 +247,7 @@ const hashedPassword = password
     
     res.status(403).send("Email not found.");
   }
+  console.log(password)
 });
 //==========================================================================
 app.post("/logout", (req, res) => {
@@ -285,7 +286,7 @@ app.post("/register", (req, res) => {
   const { email, password } = req.body
   const userId = generateRandomString(6);
   const existingUser = getUserByEmail(email);
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  
   if (existingUser) {
     res.status(400).send("Email in use");
     return;
@@ -295,9 +296,10 @@ app.post("/register", (req, res) => {
     return;
 }
   if (!password) {
-    res.status(400).send("Input apassword");
+    res.status(400).send("Input a password");
     return;
   }
+  const hashedPassword = bcrypt.hashSync(password, 10);
  const newUser = {
   id: userId,
   email,
