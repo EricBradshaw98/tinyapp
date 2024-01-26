@@ -33,9 +33,12 @@
         </thead>
         <tbody>
           <% for (let id in userurls) { %>
+            
             <tr>
-              <td><%= id %></td>
-              <td><%= userurls[id].longURL %></td>
+              <td>
+                <a href="/u/<%= id %>"><%= id %></a>
+              <td>
+                <a href="<%= userurls[id].longURL %>"><%= userurls[id].longURL %></a>
               <td>
                 <a href="/urls/<%= id %>" class="btn btn-primary">Edit</a>
               </td>
