@@ -9,8 +9,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser()); 
 app.use(cookieSession({
-  secret: "your-secret-key",
-})); 
+  name: 'session',
+  keys: ['key1', 'key2']
+}));
 
 // quality of life functions =============================================
 
