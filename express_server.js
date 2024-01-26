@@ -30,6 +30,7 @@ function generateRandomString (length) {
 
 const { getUserByEmail } = require("./helpers")
 
+
 function urlsForUser(id) {
   const userUrls = {};
   for (const shortURL in urlDatabase) {
@@ -96,9 +97,11 @@ app.get("/urls", (req, res) => {
 // app.get for /URLS New CREATE NEW URL=====================================
 app.get("/urls/new", (req, res) => {
   const userId = req.session.user_id;
-const user = users[userId];
+  const user = users[userId];
+  const userurls = urlsForUser(userId);
+
 const templateVars = {
-    user,
+    user, userurls,
   };
   if (user) {
     res.render("urls_new", templateVars);
@@ -113,15 +116,15 @@ const templateVars = {
     const shortURL = req.params.id;
     const userId = req.session.user_id;
     const user = users[userId];
-    
+    const longURL = urlDatabase[shortURL].longURL;
     const userUrls = urlsForUser(userId);
     
   if  (user && userUrls) {
     const templateVars = { shortURL, longURL, user };
-    const longURL = urlDatabase[longURL];
+    
     res.render("urls_show", templateVars);
   }
-  if (!user || !userURLS) {
+  if (!user) {
     res.status(404).send("You need to login first.");
   }
   if (!shortURL) {
@@ -214,6 +217,7 @@ const url = { longURL, userID,}
     res.redirect(`/urls`);
   });
 //==========================================================================
+const validUrlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
  app.post("/urls/:id", (req, res) => {
   const shortURL = req.params.id;
   const newURL = req.body.newURL;
@@ -231,6 +235,12 @@ const url = { longURL, userID,}
 
   if (urlDatabase[shortURL].userID !== userID) {
     res.status(403).send("You don't have permission to edit this URL.");
+    return;
+    
+  }
+
+  if (!newURL || !newURL.match(validUrlRegex)) {
+    res.status(400).send("Invalid URL format.");
     return;
   }
   urlDatabase[shortURL].longURL = newURL;
