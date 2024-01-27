@@ -65,6 +65,11 @@ app.get("/urls/:id", (req, res) => {
     res.status(403).send("The ID does not exist.");
     return; 
   }
+  if (urlDatabase[shortURL].userID !== userId) {
+    res.status(403).send("You don't have permission to edit this URL.");
+    return;
+    
+  }
 
   const longURL = urlEntry.longURL;
   const userUrls = urlsForUser(userId);
